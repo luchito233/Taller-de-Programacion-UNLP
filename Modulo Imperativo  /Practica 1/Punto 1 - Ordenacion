@@ -1,0 +1,141 @@
+ENUNCIADO: 
+
+1.- Se desea procesar la información de las ventas de productos de un comercio (como máximo
+50).
+Implementar un programa que invoque los siguientes módulos:
+
+a. Un módulo que retorne la información de las ventas en un vector. De cada venta se conoce el
+día de la venta, código del producto (entre 1 y 15) y cantidad vendida (como máximo 99
+unidades). El código debe generarse automáticamente (random) y la cantidad se debe leer. El
+ingreso de las ventas finaliza con el día de venta 0 (no se procesa).
+
+b. Un módulo que muestre el contenido del vector resultante del punto a).
+
+c. Un módulo que ordene el vector de ventas por código.
+
+d. Un módulo que muestre el contenido del vector resultante del punto c).
+
+e. Un módulo que elimine, del vector ordenado, las ventas con código de producto entre dos
+valores que se ingresan como parámetros.
+
+f. Un módulo que muestre el contenido del vector resultante del punto e).
+
+g. Un módulo que retorne la información (ordenada por código de producto de menor a
+mayor) de cada código par de producto junto a la cantidad total de productos vendidos.
+
+h. Un módulo que muestre la información obtenida en el punto g).
+
+
+
+CODIGO:
+
+program Punto1;
+const
+  df99 = 50;
+type
+  rango15 = 1..15;
+  rango99 = 1..99;
+  venta = record
+    diaVenta:integer;
+    codProducto:rango15;
+    cantidadVendida:rango99;
+  end;
+  
+  aVentas = array[1..df] of venta;
+
+
+//PROCEDIMIENTOS
+
+procedure leerVenta(var v:venta);
+begin
+  writeln('ingrese el dia de la venta');
+  readln(v.diaVenta);
+  if(v.diaVenta <> 0)then 
+  begin
+    random(v.codProducto);
+    writeln('ingrese la cantidad vendida');
+    readln(v.cantidadVendida);
+  end;
+end;
+
+procedure cargarVector(var v:aVentas;var dl:integer);
+var
+  v:venta;
+begin
+  leerVenta(v);
+  while(v.diaVenta <> 0) and (dl <= 50) do
+  begin
+    v[i]:=v;
+    dl:=dl + 1;
+    leerVenta(v);
+  end;
+end;
+
+
+procedure informarVector(v:aVentas;dl:integer);
+var
+  i:integer;
+begin
+  for i:=1 to dl do writeln(v[i]);
+end;
+
+procedure ordenarVector(var v:aVentas; dl:integer);
+var
+  i,j,pos:integer;
+  item:venta;
+begin
+  for i:= 1 to dl-1 do 
+  begin
+    pos:=i;
+    for j:= i+1 to dl do if( v[j] < v[pos]) then pos:=j:
+  end;
+  item:= v[pos];
+  v[pos]:= v[i];
+  v[i]:= item;
+end;
+
+procedure eliminarVector(var v:aVentas;var dl:integer;datoI,datoD:integer);
+var
+  i,j:integer
+begin
+  i:1;
+  while(i <= dl) do
+  begin
+    if(v[i].codProducto >= datoI) and (v[i].codProducto <= datoD) do
+    begin
+      for j:= i to dl-1 do v[j]:=v[j+1];
+      dl:=dl-1;
+    end
+    else
+      i:= i +1;
+  end;
+end;
+
+procedure contarPares(v:aVentas;dl:integer);
+var
+  i:integer;sumaTotal:integer;
+begin
+  for i:= 1 to dl do
+  begin
+    sumaTotal:= sumaTotal + v[i].cantidadVendida;
+    if (v[i].codProducto mod 2 = 0)then writeln(v[i].codProducto);
+  end;
+  writeln('la suma total de los produsctos es: ', sumaTotal);
+end;
+
+//PROGRAMA PRINCIPAL
+
+var
+  vector:aVentas;
+  dl:integer;
+  datoIzquierdo,datoDerecho:integer;
+begin
+  dl:=1;
+  cargarVector(vector,dl);
+  informarVector(vector,dl);
+  ordenarVector(vector,dl);
+  informarVector(vector,dl);
+  eliminarVector(vector,dl,datoIzquierdo,datoDerecho);  
+  informarVector(vector,dl);
+  contarPares(vector,dl);
+end.
