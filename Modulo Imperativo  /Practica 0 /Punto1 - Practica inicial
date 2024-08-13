@@ -1,0 +1,220 @@
+ENUNCIADO:
+
+1.- Implementar un programa que procese la información de los alumnos de la Facultad de
+Informática.
+
+a) Implementar un módulo que lea y retorne, en una estructura adecuada, la información de
+todos los alumnos. De cada alumno se lee su apellido, número de alumno, año de ingreso,
+cantidad de materias aprobadas (a lo sumo 36) y nota obtenida (sin contar los aplazos) en cada
+una de las materias aprobadas. La lectura finaliza cuando se ingresa el número de alumno
+11111, el cual debe procesarse.
+
+b) Implementar un módulo que reciba la estructura generada en el inciso a) y retorne número
+de alumno y promedio de cada alumno.
+
+c) Analizar: ¿qué cambios requieren los puntos a y b, si no se sabe de antemano la cantidad de
+materias aprobadas de cada alumno, y si además se desean registrar los aplazos? ¿cómo
+puede diseñarse una solución modularizada que requiera la menor cantidad de cambios?
+
+
+
+
+
+
+
+CODIGO:
+
+//PUNTO A Y B
+
+program punto1;
+const
+  max_materias = 36;
+  
+type
+  str20 = string[20];
+  
+  vMaterias = array[1..max_materias] of integer;
+
+
+  alumno = record
+    apellido:str20;
+    numeroAlum:integer;
+    anioIngreso:integer;
+    cantMateriasAprobadas:integer;
+    notas:vMaterias;
+  end;
+  
+  lista = ^nodo;
+  nodo = record
+    dato:alumno;
+    sig:lista;
+  end;
+  
+
+procedure leerNotas(var v:vMaterias; dl:integer);
+var
+  i:integer;
+begin
+  for i:= 1 to dl do 
+  begin
+    writeln('ingrese la nota del examen ',i);
+    readln(v[i]);
+  end;
+end;
+
+procedure leerAlumno(var a:alumno);
+begin
+  writeln('ingrese el apellido del alumno');
+  readln(a.apellido);
+  writeln('ingrese el numero de alumno');
+  readln(a.numeroAlum);
+  writeln('ingrese el año de ingreso del alumno');
+  readln(a.anioIngreso);
+  writeln('ingrese la cantidad de materias aprobadas');
+  readln(a.cantMateriasAprobadas);
+  if (a.cantMateriasAprobadas > 0 ) and (a.cantMateriasAprobadas < max_materias) then 
+    leerNotas(a.notas, a.cantMateriasAprobadas);
+    sig: ptrMateria;
+  end;
+
+  alumno = record
+    apellido: string;
+    numAlumno: integer;
+    anioIngreso: integer;
+    materias: ptrMateria;
+  end;
+  
+  lista = ^nodo;
+  nodo = record
+    datos: alumno;
+    sig: lista;
+  end;
+
+// Procedimiento para agregar una materia a la lista de materias de un alumno
+procedure agregarMateria(var L: ptrMateria; nota: real);
+var
+  nuevo: ptrMateria;
+begin
+  new(nuevo);
+  nuevo^.nota := nota;
+  nuevo^.sig := L;
+  L := nuevo;
+end;
+
+// Procedimiento para leer las materias (y sus notas) de un alumno
+procedure leerMaterias(var L: ptrMateria);
+var
+  nota: real;
+begin
+  L := nil;
+  writeln('Ingrese las notas de las materias (ingrese -1 para finalizar):');
+  repeat
+    readln(nota);
+    if nota <> -1 then
+      agregarMateria(L, nota);
+  until nota = -1;
+end;
+
+// Procedimiento para leer los datos de un alumno
+procedure leerAlumno(var a: alumno);
+begin
+  writeln('Ingrese el apellido del alumno:');
+  readln(a.apellido);
+  writeln('Ingrese el número de alumno:');
+  readln(a.numAlumno);
+  writeln('Ingrese el año de ingreso:');
+  readln(a.anioIngreso);
+  
+  leerMaterias(a.materias);
+end;
+
+// Procedimiento para agregar un alumno a la lista de alumnos
+procedure agregarAlumno(var L: lista; a: alumno);
+var
+  nuevo: lista;
+begin
+  new(nuevo);
+  nuevo^.datos := a;
+  nuevo^.sig := L;
+  L := nuevo;
+end;
+
+// Procedimiento para cargar la lista de alumnos
+procedure cargarAlumnos(var L: lista);
+var
+  a: alumno;
+begin
+  L := nil;
+  repeat
+    leerAlumno(a);
+    agregarAlumno(L, a);
+  until a.numAlumno = 11111;
+end;
+
+// Procedimiento para calcular y mostrar el promedio de cada alumno
+procedure calcularPromedio(L: lista);
+var
+  suma, promedio: real;
+  cantMaterias: integer;
+  mat: ptrMateria;
+begin
+  while L <> nil do
+  begin
+    suma := 0;
+    cantMaterias := 0;
+    mat := L^.datos.materias;
+    
+    while mat <> nil do
+    begin
+      suma := suma + mat^.nota;
+      cantMaterias := cantMaterias + 1;
+      mat := mat^.sig;
+    end;
+    
+    if cantMaterias > 0 then
+      promedio := suma / cantMaterias
+    else
+      promedio := 0;
+      
+    writeln('Número de Alumno: ', L^.datos.numAlumno, ' - Promedio: ', promedio:0:2);
+    L := L^.sig;
+  end;
+end;
+
+// Procedimiento para liberar la memoria de la lista de materias
+procedure liberarMaterias(var L: ptrMateria);
+var
+  aux: ptrMateria;
+begin
+  while L <> nil do
+  begin
+    aux := L;
+    L := L^.sig;
+    dispose(aux);
+  end;
+end;
+
+// Procedimiento para liberar la memoria de la lista de alumnos
+procedure liberarAlumnos(var L: lista);
+var
+  aux: lista;
+begin
+  while L <> nil do
+  begin
+    liberarMaterias(L^.datos.materias);
+    aux := L;
+    L := L^.sig;
+    dispose(aux);
+  end;
+end;
+
+var
+  lista: lista;
+
+begin
+  cargarAlumnos(lista);
+  writeln('Promedios de los alumnos:');
+  calcularPromedio(lista);
+  
+  liberarAlumnos(lista); // Liberar la memoria al finalizar
+end.
