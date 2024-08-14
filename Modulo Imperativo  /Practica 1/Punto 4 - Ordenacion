@@ -1,0 +1,174 @@
+ENUNCIADO:
+4.- Una librería requiere el procesamiento de la información de sus productos. De cada
+producto se conoce el código del producto, código de rubro (del 1 al 8) y precio.
+Implementar un programa que invoque a módulos para cada uno de los siguientes puntos:
+a. Lea los datos de los productos y los almacene ordenados por código de producto y
+agrupados por rubro, en una estructura de datos adecuada. El ingreso de los productos finaliza
+cuando se lee el precio 0.
+b. Una vez almacenados, muestre los códigos de los productos pertenecientes a cada rubro.
+c. Genere un vector (de a lo sumo 30 elementos) con los productos del rubro 3. Considerar que
+puede haber más o menos de 30 productos del rubro 3. Si la cantidad de productos del rubro 3
+es mayor a 30, almacenar los primeros 30 que están en la lista e ignore el resto.
+d. Ordene, por precio, los elementos del vector generado en c) utilizando alguno de los dos
+métodos vistos en la teoría.
+e. Muestre los precios del vector resultante del punto d).
+f. Calcule el promedio de los precios del vector resultante del punto d).
+
+
+
+
+
+
+CODIGO:
+
+program Punto4;
+const
+  df = 8;
+  df30 = 30;
+type
+  Rango30 = 1..df;
+  Rango8 = 1..df;
+  producto = record
+    codigoProducto:integer;
+    codigoRubro: Rango8;
+    precio:real;
+  end;
+  
+  lista = ^nodo;
+  nodo = record
+    dato: producto;
+    sig: lista;
+  end;
+  
+  vRubro = array[Rango8] of lista;
+  
+  vRubro3 = array[Rango30] of producto;
+
+
+procedure leerProducto(var p:producto);
+begin
+  writeln('ingrese el precio');
+  readln(p.precio);
+  if (p.precio <> 0) then
+  begin
+    writeln('ingrese el codigo del rubro');
+    readln(p.codigoRubro);
+    writeln('ingrese el codigo del producto');
+    readln(p.codigoProducto);
+  end;
+end;
+
+procedure insertarOrdenado(var l:lista; p:producto);
+var
+  act,ant,aux:lista;
+begin
+  new(aux);
+  aux^.dato:= p;
+  aux^.sig:= nil;
+  if (l = nil) then l:= aux
+  else
+    act:=l;
+    while(act <> nil) and (act^.dato.codigoProducto > aux^.dato.codigoProducto) do
+    begin
+      ant:= act;
+      act:= act^.sig;
+    end;
+  if(act = l) then
+  begin
+    aux^.sig:= l;
+    l:= aux;
+  end
+  else
+    ant^.sig:= aux;
+    aux^.sig:= act;
+end;
+
+procedure cargarVector(var v:vRubro);
+var
+  p:producto;
+  i:integer;
+begin
+  for i:= 1 to df do
+  begin
+    leerProducto(p);
+    while(p.precio <> 0) do
+    begin
+      insertarOrdenado(v[i],p);
+      leerProducto(p);
+    end;
+  end;
+end;
+
+procedure informarVector(v:vRubro);
+var
+  i: integer;
+begin
+  for i:= 1 to df do
+  begin
+    while (v[i] <> nil) do 
+    begin
+      writeln('codigo de producto del rubro: ', i,'des: ',v[i]^.dato.codigoProducto);
+      v[i]:= v[i]^.sig;
+    end;
+  end;
+end;
+
+procedure cargarVrubro3(var vRubroTres:vRubro3;var dl:integer;vLista:vRubro);
+var
+  valido:boolean;
+begin
+  valido:=true;
+  while(vLista[3] <> nil) and valido do
+  begin
+    if(dl = 30) then valido:= false;
+    if(dl <= df30) then vRubroTres[dl]:= vLista[3]^.dato;
+    dl:= dl+1;
+    vLista[3]:= vLista[3]^.sig;
+  end;
+end;
+
+procedure ordenarVector(var v:vRubro3; dl:integer);
+var
+  i,j:integer; 
+  actual:real;
+begin
+  for i:= 2 to dl do
+  begin
+    actual:= v[i].precio;
+    j:= i-1;
+    while(j > 0) and (v[j].precio > actual) do
+    begin
+      v[j+1]:=v[j];
+      j:= j + 1;
+    end;
+  v[j+1].precio:= actual;
+  end;
+end;
+
+procedure recorrerVector(v:vRubro3;dl:integer);
+var
+  i:integer;
+  sumaTotal:real;
+begin
+  for i:= 1 to dl do
+  begin
+    writeln(v[i].precio);
+    sumaTotal:= sumaTotal + v[i].precio;
+  end;
+  writeln('el promedio de todos los precios es: ',sumaTotal/dl);
+end;
+
+
+
+var
+  dl:integer;
+  vectorLista:vRubro;
+  vectorRubro3:vRubro3;
+begin
+  dl:=1;
+  cargarVector(vectorLista);
+  informarVector(vectorLista);
+  cargarVrubro3(vectorRubro3,dl,vectorLista);
+  ordenarVector(vectorRubro3,dl);
+  recorrerVector(vectorRubro3,dl)
+end.
