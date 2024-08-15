@@ -1,0 +1,152 @@
+ENUNCIADO:
+1.- Implementar un programa que invoque a los siguientes módulos.
+a. Un módulo recursivo que permita leer una secuencia de caracteres terminada en punto, los
+almacene en un vector con dimensión física igual a 10 y retorne el vector.
+
+b. Un módulo que reciba el vector generado en a) e imprima el contenido del vector.
+
+c. Un módulo recursivo que reciba el vector generado en a) e imprima el contenido del vector..
+
+d. Un módulo recursivo que permita leer una secuencia de caracteres terminada en punto y
+retorne la cantidad de caracteres leídos. El programa debe informar el valor retornado.
+
+e. Un módulo recursivo que permita leer una secuencia de caracteres terminada en punto y
+retorne una lista con los caracteres leídos.
+
+f. Un módulo recursivo que reciba la lista generada en e) e imprima los valores de la lista en el
+mismo orden que están almacenados.
+
+g. Implemente un módulo recursivo que reciba la lista generada en e) e imprima los valores de
+la lista en orden inverso al que están almacenados.
+
+
+
+
+
+
+CODIGO:
+program Punto1;
+const
+  df = 10;
+type
+  vSecuenciaDig = array[1..df] of string;
+  
+  lista = ^nodo;
+  nodo = record
+    dato: char;
+    sig: lista;
+  end;
+  
+procedure cargarVector(var v:vSecuenciaDig;var dl:integer);
+var
+  cadena:string;
+  caracter:char;
+begin
+  cadena:= ' ';
+  repeat 
+    readln(caracter);
+    cadena:=cadena + caracter;
+  until(caracter = '.');
+  writeln(dl);
+  while(dl <= df) do
+  begin
+    v[dl]:=cadena;
+    dl:=dl + 1;
+    cargarVector(v,dl);
+  end;
+end;
+
+procedure informarVector(v:vSecuenciaDig);
+var
+  i:integer;
+begin
+  for i:= 1 to 10 do writeln('cadena ',i,' seria: ',v[i]);
+end;
+
+procedure informarVectorRecursivo(v:vSecuenciaDig; var dl:integer);
+begin
+  while(dl <= df) do
+  begin
+    writeln('la cadena: ',dl,' sera: ',v[dl]);
+    dl:=dl + 1;
+    informarVectorRecursivo(v,dl);
+  end;
+end;
+  
+
+procedure leerRecursivoYContar(dl:integer;var cant:integer);
+var
+  caracter:char;
+begin
+  if (dl <= df) then begin
+    write('Escriba un caracter para contar: ');
+    readln(caracter);
+    if (caracter <> '.') then begin
+       cant:=cant+1;
+       dl:=dl+1;
+       leerRecursivoYContar(dl,cant);
+    end;
+  end;
+end;
+
+procedure agregarAdelante(var l:lista;c:char);
+var
+  aux:lista;
+begin
+  new(aux);
+  aux^.dato:= c;
+  aux^.sig:= l;
+  l:= aux;
+end;
+
+procedure leerYagregar(var l: lista);
+var
+  caracter: char;
+begin
+  read(caracter);  
+  if (caracter <> '.') then
+  begin
+    agregarAdelante(l, caracter);  
+    leerYagregar(l);  
+  end;
+end;
+
+procedure informarListaRecursivo(l:lista);
+begin
+  if(l <> nil) then
+  begin
+    writeln(l^.dato);
+    l:=l^.sig;
+    informarListaRecursivo(l);
+  end;
+end;
+ 
+procedure informarListaRecursivoInvertido(l:lista);
+begin
+  if(l <> nil) then
+  begin
+    informarListaRecursivoInvertido(l^.sig);
+    writeln(l^.dato);
+    
+  end;
+end;
+ 
+  
+var
+  vector:vSecuenciaDig;
+  dl:integer;
+  cantCarcteres: integer;
+  lis:lista;
+begin
+  dl:= 1;
+  cargarVector(vector,dl); //a
+  informarVector(vector); //b
+  dl:=1;
+  informarVectorRecursivo(vector,dl); //c
+  dl:= 1;
+  leerRecursivoYContar(dl,cantCarcteres); //d
+  writeln('la cantidad de digitos es: ',cantCarcteres);
+  leerYagregar(lis);//e
+  informarListaRecursivo(lis);//f
+  informarListaRecursivoInvertido(lis);//g
+end.
