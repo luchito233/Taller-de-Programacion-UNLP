@@ -1,0 +1,79 @@
+ENUNCIADO: 
+
+4.- Escribir un programa con:
+a. Un módulo recursivo que retorne un vector de 20 números enteros “random” mayores a 0 y
+menores a 100.
+
+b. Un módulo recursivo que devuelva el máximo valor del vector.
+
+c. Un módulo recursivo que devuelva la suma de los valores contenidos en el vector.
+
+
+
+
+CODIGO:
+
+program Punto3;
+const
+  df20 = 20;
+type
+
+  Rango20 = 1..20;
+
+  vEnteros = array[Rango20] of integer;
+
+procedure cargarVector(var v:vEnteros; dl:integer);
+var
+  num:integer;
+begin
+  if(dl <= df20) then
+  begin
+    num:= random(100);
+    v[dl]:= num;
+    dl:= dl + 1;
+    cargarVector(v,dl);
+  end;
+end;
+
+procedure informarVector(v:vEnteros);
+var
+  i:integer;
+begin
+  for i:= 1 to df20 do writeln('pos: ',i,' es: ',v[i]);
+end;
+
+procedure calcularMaximo(v:vEnteros;dl:integer;var max:integer);
+begin
+  if (dl <= df20) then
+  begin
+    if(v[dl] > max) then max:= v[dl];
+    dl:=dl + 1;
+    calcularMaximo(v,dl,max);
+  end;
+end;
+
+procedure sumaVector(v:vEnteros;dl:integer;var s:integer);
+begin
+  if(dl <= df20) then
+  begin
+    writeln(v[dl]);
+    s:= s + v[dl];
+    sumaVector(v,dl+1,s);
+  end;
+end;
+
+var
+  vector: vEnteros;
+  max,dl:integer;
+  sumaTotal:integer;
+begin
+  randomize;
+  max:= -1;
+  dl:= 1;
+  cargarVector(vector,dl);
+  informarVector(vector);
+  calcularMaximo(vector,dl,max);
+  writeln('el numero mas grande del vector es: ',max);
+  sumaVector(vector,dl,sumaTotal);
+  writeln('la suma de todos los valores del vector es: ',sumaTotal);
+end.
