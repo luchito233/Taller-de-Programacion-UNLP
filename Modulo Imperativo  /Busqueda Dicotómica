@@ -1,0 +1,18 @@
+procedure busquedaDicotomica(v: vector; ini, fin: indice; dato: integer; var pos: indice);
+var
+  medio: indice;
+begin
+  if ini > fin then
+    pos := -1  // No se encontró el dato
+  else
+  begin
+    medio := (ini + fin) div 2;
+    
+    if v[medio] = dato then
+      pos := medio  // Se encontró el dato
+    else if v[medio] < dato then
+      busquedaDicotomica(v, medio + 1, fin, dato, pos)  // Buscar en la mitad superior
+    else
+      busquedaDicotomica(v, ini, medio - 1, dato, pos)  // Buscar en la mitad inferior
+  end;
+end;
