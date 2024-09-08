@@ -135,7 +135,7 @@ end;
 
 procedure recorrerLista(l: lista; x, y: integer; var lnueva:lista);
 begin
-    if(l <> nil)then
+    while(l <> nil)then
     begin
 		
 		if(l^.dato.numFac >= x) and (l^.dato.numFac <= y)then
