@@ -135,9 +135,8 @@ end;
 
 procedure recorrerLista(l: lista; x, y: integer; var lnueva:lista);
 begin
-    while(l <> nil)then
-    begin
-		
+    while(l <> nil)do
+    begin		
 		if(l^.dato.numFac >= x) and (l^.dato.numFac <= y)then
 			agregarAdelante(lnueva,l^.dato);
 		l:=l^.sig;
