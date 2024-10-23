@@ -1,0 +1,83 @@
+programa Punto1
+procesos 
+  proceso depositarFlores(E flores:numero)
+  comenzar
+    repetir flores
+      depositarFlor
+  fin
+  proceso juntar(ES flor:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flor := flor + 1
+  fin
+  proceso recorrerAv (ES sumaTotal: numero)
+  comenzar
+    sumaTotal:= 0
+    repetir 9
+      juntar(sumaTotal)
+      mover
+    juntar(sumaTotal)
+  fin
+areas
+  area1: AreaP(1,1,1,10)
+  area2: AreaP(2,11,2,20)
+  area3: AreaP(2,1,2,1)
+robots
+  robot tipo1
+  variables
+    cantFlores : numero
+    cantFlores2 : numero
+    diferencia : numero
+    quienSoy : numero
+  comenzar
+    RecibirMensaje(quienSoy,robotFiscalizador)
+    cantFlores := 0
+    recorrerAv(cantFlores)
+    EnviarMensaje(quienSoy,robotFiscalizador)
+    EnviarMensaje(cantFlores,robotFiscalizador)
+  fin
+  robot tipo2
+  variables
+    cantFlores : numero
+    cantFlores2 : numero
+    diferencia : numero
+    quienSoy : numero
+  comenzar
+    RecibirMensaje(quienSoy,robotFiscalizador)
+    cantFlores := 0
+    recorrerAv(cantFlores)
+    EnviarMensaje(quienSoy,robotFiscalizador)
+    EnviarMensaje(cantFlores,robotFiscalizador)
+  fin
+  robot fiscalizador
+  variables
+    diferencia : numero
+    quienEs : numero
+    f1,f2 : numero
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    repetir 2
+      RecibirMensaje(quienEs,*)
+      si(quienEs = 1)
+        RecibirMensaje(f1,robot1)
+      sino
+        RecibirMensaje(f2,robot2)
+    si(f1 > f2)
+      Informar('DiferenciaRobot1',f1-f2)
+    sino
+      Informar('DiferenciaRobot2',f2-f1)
+  fin
+variables
+  robot1 : tipo1
+  robot2 : tipo2
+  robotFiscalizador : fiscalizador
+comenzar
+  AsignarArea(robot1,area1)
+  AsignarArea(robot2,area2)
+  AsignarArea(robotFiscalizador,area3)
+  Iniciar(robot1, 1, 1)
+  Iniciar(robot2, 2, 11)
+  Iniciar(robotFiscalizador,2,1)
+fin

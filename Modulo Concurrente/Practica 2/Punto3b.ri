@@ -1,0 +1,102 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un cÃ³digo de ejemplo que implementa un
+proceso que recibe un nÃºmero de avenida como parÃ¡metro,
+se posiciona en esa avenida y la recorre.}
+
+programa punto3b
+procesos
+  proceso juntarPapeles(ES papel : numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papel:= papel + 1
+  fin
+  proceso juntarFlores(ES flor : numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flor:= flor + 1  
+  fin
+  proceso recorrerCalleFlores(ES flores : numero)
+  comenzar
+    repetir 9
+      juntarFlores(flores)
+      mover
+    juntarFlores(flores)
+  fin
+  proceso recorrerCallePapeles(ES papeles : numero)
+  comenzar
+    repetir 9
+      juntarPapeles(papeles)
+      mover
+    juntarPapeles(papeles)
+  fin
+areas
+  area1 : AreaP(1,1,40,1)
+  area2 : AreaP(1,5,40,5)
+robots
+  robot tipoA1
+  variables
+    cantPapeles : numero
+  comenzar
+    derecha
+    recorrerCallePapeles(cantPapeles)
+    EnviarMensaje(cantPapeles,robotA2)
+    Pos(21,1)
+    RecibirMensaje(cantPapeles,robotA2)
+    recorrerCallePapeles(cantPapeles)
+    EnviarMensaje(cantPapeles,robotA2)
+  fin
+  robot tipoA2
+  variables
+    cantPapeles : numero  
+  comenzar
+    RecibirMensaje(cantPapeles,robotA1)
+    derecha
+    recorrerCallePapeles(cantPapeles)
+    EnviarMensaje(cantPapeles,robotA1)
+    Pos(31,1)
+    RecibirMensaje(cantPapeles,robotA1)
+    recorrerCallePapeles(cantPapeles)
+    Informar('Equipo A',cantPapeles)
+  fin
+  robot tipoB1
+  variables
+    cantFlores : numero
+  comenzar
+    derecha
+    recorrerCalleFlores(cantFlores)
+    EnviarMensaje(cantFlores,robotB2)
+    Pos(21,5)
+    RecibirMensaje(cantFlores,robotB2)
+    recorrerCalleFlores(cantFlores)
+    EnviarMensaje(cantFlores,robotB2)
+  fin
+  robot tipoB2
+  variables
+    cantFlores : numero
+  comenzar
+    RecibirMensaje(cantFlores,robotB1)
+    derecha
+    recorrerCalleFlores(cantFlores)
+    EnviarMensaje(cantFlores,robotB1)
+    Pos(31,5)
+    RecibirMensaje(cantFlores,robotB1)
+    recorrerCalleFlores(cantFlores)
+    Informar('Equipo B',cantFlores)
+  fin
+variables
+  robotA1: tipoA1
+  robotB1: tipoB1
+  robotA2: tipoA2
+  robotB2: tipoB2
+comenzar
+  AsignarArea(robotA1, area1)
+  AsignarArea(robotB1, area2)
+  AsignarArea(robotA2, area1)
+  AsignarArea(robotB2, area2)
+  Iniciar(robotA1, 1,1)
+  Iniciar(robotB1, 1,5)
+  Iniciar(robotA2, 11,1)
+  Iniciar(robotB2, 11,5)
+fin

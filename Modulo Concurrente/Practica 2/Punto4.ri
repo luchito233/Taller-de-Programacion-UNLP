@@ -1,0 +1,154 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa Punto4
+procesos
+  proceso juntar(ES cantidad : numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantidad := cantidad + 1
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantidad := cantidad + 1
+  fin
+  proceso ingreso(ES cantTotal: numero)
+  variables
+    posCa,posAv : numero
+    calle,avenida : numero
+  comenzar
+    posCa := PosCa
+    posAv := PosAv
+    Random(calle,25,75)
+    Random(avenida,25,75)
+    Pos(avenida,calle)
+    juntar(cantTotal)   
+    Pos(posAv,posCa)
+  fin
+  proceso terminarBucle
+  comenzar
+    EnviarMensaje(F,robot1)
+    EnviarMensaje(F,robot2)
+    EnviarMensaje(F,robot3)
+    EnviarMensaje(F,robot4)
+  fin
+  proceso calcularMaximo(E cant1:numero; E cant2:numero; E cant3:numero; E cant4:numero; ES robotMax:numero)
+  variables
+    max : numero
+  comenzar
+    max := 0
+    si(cant1 > max)
+      max:= cant1
+      robotMax := 1
+    si(cant2 > max)
+      max:= cant2
+      robotMax := 2
+    si(cant3 > max)
+      max:= cant3
+      robotMax := 3
+    si(cant4 > max)
+      max:= cant4
+      robotMax := 4
+  fin
+  proceso informarAlRobot(E gano:boolean; E robotActual: numero)
+  comenzar
+    si(robotActual = 1)
+      EnviarMensaje(gano,robot1)
+    sino
+      si(robotActual = 2)
+        EnviarMensaje(gano,robot2)
+      sino
+        si(robotActual = 3)
+          EnviarMensaje(gano,robot3)
+        sino
+          EnviarMensaje(gano,robot4)
+  fin
+areas
+  cuadrante: AreaPC(25,25,75,75)
+  areaF : AreaP(1,1,1,1)
+  area1 : AreaP(25,1,25,1)
+  area2 : AreaP(30,1,30,1)
+  area3 : AreaP(35,1,35,1)
+  area4 : AreaP(40,1,40,1)
+robots
+  robot tipo1
+  variables
+    aux, gano : boolean
+    cant : numero
+  comenzar
+    RecibirMensaje(aux,robotFiscal)
+    mientras(aux)
+      RecibirMensaje(cant,robotFiscal)
+      ingreso(cant)
+      EnviarMensaje(cant,robotFiscal)
+      RecibirMensaje(aux,robotFiscal)
+    RecibirMensaje(gano,robotFiscal)
+    si(gano)
+      Pos(50,50)
+  fin
+  robot jefe 
+  variables
+    cant1,cant2,cant3,cant4 : numero
+    maxR : numero
+    robotActual : numero
+    gano : boolean
+  comenzar
+    maxR := 0
+    cant1 := 0
+    cant2 := 0
+    cant3 := 0
+    cant4 := 0
+    repetir 10
+      Random(robotActual,1,4)
+      si robotActual = 1
+        EnviarMensaje(V,robot1)
+        EnviarMensaje(cant1,robot1)
+        RecibirMensaje(cant1,robot1)
+      sino
+        si robotActual = 2
+          EnviarMensaje(V,robot2)
+          EnviarMensaje(cant2,robot2)
+          RecibirMensaje(cant2,robot2)
+        sino
+          si robotActual = 3
+            EnviarMensaje(V,robot3)
+            EnviarMensaje(cant3,robot3)
+            RecibirMensaje(cant3,robot3)
+          sino
+            EnviarMensaje(V,robot4)
+            EnviarMensaje(cant4,robot4)
+            RecibirMensaje(cant4,robot4)
+    calcularMaximo(cant1,cant2,cant3,cant4,maxR)
+    terminarBucle
+    robotActual := 1
+    repetir 4
+      si(robotActual = maxR) 
+        gano := V
+      sino
+        gano := F
+      informarAlRobot(gano,robotActual)
+      robotActual:= robotActual + 1
+    Informar('Ganador',maxR)
+  fin
+  
+variables
+  robotFiscal : jefe
+  robot1,robot2,robot3,robot4 : tipo1
+comenzar
+  AsignarArea(robot1, cuadrante)
+  AsignarArea(robot1, area1)
+  AsignarArea(robot2, cuadrante)
+  AsignarArea(robot2, area2)
+  AsignarArea(robot3, cuadrante)
+  AsignarArea(robot3, area3)
+  AsignarArea(robot4, cuadrante)
+  AsignarArea(robot4, area4)
+  AsignarArea(robotFiscal, areaF)
+  Iniciar(robot1, 25,1)
+  Iniciar(robot2, 30,1)
+  Iniciar(robot3, 35,1)
+  Iniciar(robot4, 40,1)
+  Iniciar(robotFiscal, 1,1)
+fin

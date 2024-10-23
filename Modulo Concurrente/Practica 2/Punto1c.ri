@@ -1,0 +1,78 @@
+programa Punto1
+procesos 
+  proceso depositarFlores(E flores:numero)
+  comenzar
+    repetir flores
+      depositarFlor
+  fin
+  proceso juntar(ES flor:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flor := flor + 1
+  fin
+  proceso recorrerAv (ES sumaTotal: numero)
+  comenzar
+    sumaTotal:= 0
+    repetir 9
+      juntar(sumaTotal)
+      mover
+    juntar(sumaTotal)
+  fin
+  proceso calcularMaximo(E flores : numero; ES maxFlores : numero)
+  comenzar
+    si(flores > maxFlores | maxFlores = 0)
+      maxFlores := flores
+  fin
+areas
+  area1: AreaP(1,1,1,10)
+  area2: AreaP(2,11,2,20)
+  area3: AreaP(3,21,3,30)
+  area4: AreaP(4,31,4,40)
+  area5: AreaP(5,41,5,50)
+  area6: AreaP(6,51,6,60)
+  areaFiscal: AreaP(2,1,2,1)
+robots
+  robot tipo1
+  variables
+    cantFlores : numero
+  comenzar
+    cantFlores := 0
+    recorrerAv(cantFlores)
+    EnviarMensaje(cantFlores,robotFiscalizador)
+  fin
+  robot fiscalizador
+  variables
+    flores : numero
+    maxFlores : numero
+  comenzar
+    maxFlores := 0
+    repetir 6
+      RecibirMensaje(flores,*)
+      calcularMaximo(flores,maxFlores)
+    Informar('floresMaximas',maxFlores)
+  fin
+variables
+  robot1 : tipo1
+  robot2 : tipo1
+  robot3 : tipo1
+  robot4 : tipo1
+  robot5 : tipo1
+  robot6 : tipo1
+  robotFiscalizador : fiscalizador
+comenzar
+  AsignarArea(robot1,area1)
+  AsignarArea(robot2,area2)
+  AsignarArea(robot3,area3)
+  AsignarArea(robot4,area4)
+  AsignarArea(robot5,area5)
+  AsignarArea(robot6,area6)
+  AsignarArea(robotFiscalizador,areaFiscal)
+  Iniciar(robot1, 1, 1)
+  Iniciar(robot2, 2, 11)
+  Iniciar(robot3, 3, 21)
+  Iniciar(robot4, 4, 31)
+  Iniciar(robot5, 5, 41)
+  Iniciar(robot6, 6, 51)
+  Iniciar(robotFiscalizador,2,1)
+fin
