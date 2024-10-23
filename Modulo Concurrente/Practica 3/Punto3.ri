@@ -1,0 +1,99 @@
+programa Punto3
+procesos
+  proceso enviarMsj(E av : numero;  E ca : numero)
+  comenzar
+    EnviarMensaje(av,robot1)
+    EnviarMensaje(ca,robot1)
+    EnviarMensaje(av,robot2)
+    EnviarMensaje(ca,robot2)
+    EnviarMensaje(av,robot3)
+    EnviarMensaje(ca,robot3)
+    EnviarMensaje(av,robot4)
+    EnviarMensaje(ca,robot4)
+  fin
+  proceso calcularMaximo(E cantFlores : numero; ES maxFlores : numero; E robotActual : numero; ES maxRobot : numero)
+  comenzar
+    si(cantFlores > maxFlores)
+      maxFlores := cantFlores
+      maxRobot := robotActual
+  fin
+areas
+  cuadrante: AreaPC(2,2,10,10)
+  areaJ: AreaP(1,1,1,1)
+  area1: AreaP(2,1,2,1)
+  area2: AreaP(3,1,3,1)
+  area3: AreaP(4,1,4,1)
+  area4: AreaP(5,1,5,1)
+robots
+  robot tipo1
+  variables
+    cantFlores : numero
+    posAvIni,posCaIni : numero
+    av,ca : numero
+    quienSoy : numero
+  comenzar
+    RecibirMensaje(quienSoy,robotJefe)
+    cantFlores := 0
+    posAvIni := PosAv
+    posCaIni := PosCa
+    RecibirMensaje(av,robotJefe)
+    RecibirMensaje(ca,robotJefe)
+    BloquearEsquina(av,ca)
+    Pos(av,ca)
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+      Pos(posAvIni,posCaIni)
+      LiberarEsquina(x,y)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+    EnviarMensaje(quienSoy,robotJefe)
+    EnviarMensaje(cantFlores,robotJefe)
+  fin 
+  robot jefe 
+  variables 
+    quienEs : numero
+    avenida,calle : numero
+    cantFlores ,maxR, maxFlores: numero
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
+    Random(avenida,2,10)
+    Random(calle,2,10)
+    enviarMsj(avenida,calle)
+    maxFlores := -1
+    repetir 4
+      RecibirMensaje(quienEs,*)
+      si(quienEs = 1)
+        RecibirMensaje(cantFlores,robot1)
+      sino
+        si(quienEs = 2)
+          RecibirMensaje(cantFlores,robot2)
+        sino
+          si(quienEs = 3)
+            RecibirMensaje(cantFlores,robot3)
+          sino
+            RecibirMensaje(cantFlores,robot4)
+      calcularMaximo(cantFlores,maxFlores,quienEs,maxR)
+  fin
+variables
+  robot1,robot2,robot3,robot4: tipo1
+  robotJefe : jefe
+comenzar
+  AsignarArea(robot1,area1)
+  AsignarArea(robot2,area2) 
+  AsignarArea(robot3,area3)
+  AsignarArea(robot4,area4)
+  AsignarArea(robot1,cuadrante)
+  AsignarArea(robot2,cuadrante)
+  AsignarArea(robot3,cuadrante)
+  AsignarArea(robot4,cuadrante)
+  AsignarArea(robotJefe,areaJ)
+  Iniciar(robot1, 2,1)
+  Iniciar(robot2, 3,1)
+  Iniciar(robot3, 4,1)
+  Iniciar(robot4, 5,1)
+  Iniciar(robotJefe, 1,1)
+fin 

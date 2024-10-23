@@ -1,0 +1,73 @@
+programa Punto5
+procesos
+  proceso juntarPapel(ES papeles: numero; ES termino:boolean)
+  comenzar
+    si(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles := papeles + 1
+    sino
+      termino := V
+  fin
+areas
+  fuente: AreaPC(11,11,11,11)
+  areaJ: AreaP(1,1,1,1)
+  area1: AreaP(4,1,4,100)
+  area2: AreaP(5,1,5,100)
+  area3: AreaP(6,1,6,100)
+  area4: AreaP(7,1,7,100)
+robots
+  robot tipo1
+  variables
+    cantPapeles : numero
+    quienSoy : numero
+    posAvIni,posCaIni : numero
+    termine : boolean
+  comenzar
+    RecibirMensaje(quienSoy,robotJefe)
+    cantPapeles := 0
+    termine := F
+    mientras((PosCa <100) & (~termine))
+      posAvIni := PosAv
+      posCaIni := PosCa
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      juntarPapel(cantPapeles,termine)
+      Pos(posAvIni,posCaIni)
+      LiberarEsquina(11,11)
+      si(~termine)
+        depositarPapel
+        mover 
+    EnviarMensaje(quienSoy,robotJefe)
+  fin 
+  robot jefe 
+  variables 
+    quienEs ,masLejos: numero
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
+    repetir 3
+      RecibirMensaje(quienEs,*)
+    RecibirMensaje(masLejos,*)
+    Informar('el que llego mas lejos fue',masLejos)
+  fin
+variables
+  robot1,robot2,robot3,robot4: tipo1
+  robotJefe : jefe
+comenzar
+  AsignarArea(robot1,area1)
+  AsignarArea(robot2,area2) 
+  AsignarArea(robot3,area3)
+  AsignarArea(robot4,area4)
+  AsignarArea(robot1,fuente)
+  AsignarArea(robot2,fuente)
+  AsignarArea(robot3,fuente)
+  AsignarArea(robot4,fuente)
+  AsignarArea(robotJefe,areaJ)
+  Iniciar(robot1, 4,1)
+  Iniciar(robot2, 5,1)
+  Iniciar(robot3, 6,1)
+  Iniciar(robot4, 7,1)
+  Iniciar(robotJefe, 1,1)
+fin 

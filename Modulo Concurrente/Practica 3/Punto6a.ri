@@ -1,0 +1,228 @@
+programa punto6a
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso juntarPapeles
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin 
+  proceso juntarAmbos
+  comenzar
+    juntarFlores
+    juntarPapeles
+  fin
+  proceso recorrer
+  comenzar
+    mientras((PosAv < 100) & (HayPapelEnLaBolsa | HayFlorEnLaBolsa))
+      si(HayPapelEnLaBolsa)
+        depositarPapel
+      si(HayFlorEnLaBolsa)
+        depositarFlor
+      mover
+  fin
+  proceso darseVuelta
+  comenzar
+    repetir 2
+      derecha
+  fin
+areas
+  areaRecorrido: AreaPC(1,20,100,22)
+  area: AreaPC (2,2,15,15)
+  areaJefe: AreaP(1,1,1,1)
+robots
+  robot tipo1
+  variables
+    quienSoy : numero
+    calle : numero
+  comenzar
+    RecibirMensaje(quienSoy,rJefe)
+    repetir 5
+      juntarFlores
+      mover
+    juntarFlores
+    derecha
+    repetir 2
+      juntarFlores
+      mover
+    juntarFlores
+    BloquearEsquina(5,7)
+    mover
+    juntarFlores
+    mover
+    LiberarEsquina(5,7)
+    juntarFlores
+    mover
+    juntarFlores
+    derecha
+    mover
+    juntarFlores
+    BloquearEsquina(7,5)
+    mover
+    juntarFlores
+    mover
+    LiberarEsquina(7,5)
+    juntarFlores
+    repetir 2
+      juntarFlores
+      mover
+    juntarFlores
+    derecha
+    repetir 5
+      juntarFlores
+      mover
+    EnviarMensaje(quienSoy,rJefe)
+    RecibirMensaje(calle,rJefe)
+    Pos(1,calle)
+    darseVuelta
+    recorrer    
+  fin
+  robot tipo2
+  variables
+    quienSoy : numero
+    calle : numero
+  comenzar
+    RecibirMensaje(quienSoy,rJefe)
+    juntarAmbos
+    mover
+    juntarAmbos
+    BloquearEsquina(5,7)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(5,7)
+    juntarAmbos
+    repetir 6
+      juntarAmbos
+      mover
+    juntarAmbos
+    derecha
+    repetir 3
+      juntarAmbos
+      mover
+    juntarAmbos
+    BloquearEsquina(9,14)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(9,14)
+    juntarAmbos
+    repetir 4
+      juntarAmbos
+      mover
+    juntarAmbos
+    derecha
+    repetir 4
+      juntarAmbos
+      mover
+    juntarAmbos
+    BloquearEsquina(14,9)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(14,9)
+    juntarAmbos
+    repetir 3
+      juntarAmbos
+      mover
+    juntarAmbos
+    derecha
+    repetir 6
+      juntarAmbos
+      mover
+    juntarAmbos
+    BloquearEsquina(7,5)
+    mover
+    juntarAmbos
+    mover
+    LiberarEsquina(7,5)
+    juntarAmbos
+    mover
+    EnviarMensaje(quienSoy,rJefe)
+    RecibirMensaje(calle,rJefe)
+    Pos(1,calle)
+    darseVuelta
+    recorrer    
+  fin
+  robot tipo3
+  variables
+    quienSoy : numero
+    calle : numero
+  comenzar
+    RecibirMensaje(quienSoy,rJefe)
+    repetir 4
+      juntarPapeles
+      mover
+    juntarPapeles
+    BloquearEsquina(9,14)
+    mover
+    juntarPapeles
+    mover
+    LiberarEsquina(9,14)
+    juntarPapeles
+    derecha
+    repetir 6
+      juntarPapeles
+      mover
+    juntarPapeles
+    derecha
+    repetir 6
+      juntarPapeles
+      mover
+    juntarPapeles
+    derecha
+    BloquearEsquina(14,9)
+    mover
+    juntarPapeles
+    mover
+    LiberarEsquina(14,9)
+    repetir 4
+      juntarPapeles
+      mover
+    EnviarMensaje(quienSoy,rJefe)
+    RecibirMensaje(calle,rJefe)
+    Pos(1,calle)
+    darseVuelta
+    recorrer  
+  fin
+  robot Jefe
+  variables
+    quienEs : numero
+    posCa : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    posCa := 20
+    repetir 3
+      RecibirMensaje(quienEs,*)
+      si(quienEs = 1)
+        EnviarMensaje(posCa,r1)
+      sino
+        si(quienEs = 2)
+          EnviarMensaje(posCa,r2)
+        sino
+          EnviarMensaje(posCa,r3)
+      posCa:= posCa + 1
+  fin
+variables
+  r1: tipo1
+  r2: tipo2
+  r3: tipo3
+  rJefe: Jefe
+comenzar
+  AsignarArea(r1, area)
+  AsignarArea(r2, area)
+  AsignarArea(r3, area)
+  AsignarArea(r1, areaRecorrido)
+  AsignarArea(r2, areaRecorrido)
+  AsignarArea(r3, areaRecorrido)
+  AsignarArea(rJefe, areaJefe)
+  Iniciar(r1, 2,2)
+  Iniciar(r2, 5,5)
+  Iniciar(r3, 9,9)
+  Iniciar(rJefe, 1,1)
+fin

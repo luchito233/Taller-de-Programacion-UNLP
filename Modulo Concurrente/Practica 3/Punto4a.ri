@@ -1,0 +1,82 @@
+programa Punto4a
+procesos
+  proceso recolectarFlores(ES flores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores := flores + 1
+  fin
+areas
+  areaEnComun: AreaC(10,10,11,11)
+  areaJ: AreaP(1,1,1,1)
+  area1: AreaP(9,9,9,9)
+  area2: AreaP(9,10,9,10)
+  area3: AreaP(9,11,9,11)
+  area4: AreaP(9,12,9,12)
+robots
+  robot tipo1
+  variables
+    cantFlores : numero
+    posAvIni,posCaIni : numero
+    av,ca : numero
+    quienSoy : numero
+  comenzar
+    RecibirMensaje(quienSoy,robotJefe)
+    cantFlores := 0
+    posAvIni := PosAv
+    posCaIni := PosCa
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cantFlores := cantFlores + 1
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      LiberarEsquina(10,10)
+      depositarFlor
+      Pos(posAvIni,posCaIni)
+      LiberarEsquina(11,11)
+      BloquearEsquina(10,10)
+      Pos(10,10)
+    Pos(posAvIni,posCaIni)
+    LiberarEsquina(10,10)
+    EnviarMensaje(quienSoy,robotJefe)
+  fin 
+  robot jefe 
+  variables 
+    quienEs ,masRapido: numero
+    avenida,calle : numero
+    cantFlores ,maxR, maxFlores: numero
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
+    cantFlores:= 0
+    RecibirMensaje(masRapido,*)
+    repetir 3
+      RecibirMensaje(quienEs,*)
+    Informar('el mas rapido fue',masRapido)
+    Pos(11,11)
+    recolectarFlores(cantFlores)
+  fin
+variables
+  robot1,robot2,robot3,robot4: tipo1
+  robotJefe : jefe
+comenzar
+  AsignarArea(robot1,area1)
+  AsignarArea(robot2,area2) 
+  AsignarArea(robot3,area3)
+  AsignarArea(robot4,area4)
+  AsignarArea(robot1,areaEnComun)
+  AsignarArea(robot2,areaEnComun)
+  AsignarArea(robot3,areaEnComun)
+  AsignarArea(robot4,areaEnComun)
+  AsignarArea(robotJefe,areaJ)
+  AsignarArea(robotJefe,areaEnComun)
+  Iniciar(robot1, 9,9)
+  Iniciar(robot2, 9,10)
+  Iniciar(robot3, 9,11)
+  Iniciar(robot4, 9,12)
+  Iniciar(robotJefe, 1,1)
+fin 

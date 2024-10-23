@@ -1,0 +1,114 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa Punto1
+procesos
+  proceso depositarFlores
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+  proceso depositarPapeles
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+  proceso juntarPapeles(ES papeles: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles := papeles + 1
+  fin
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores := flores + 1
+  fin
+areas
+  deposito: AreaC(10,10,10,10)
+  areaFloreros: AreaPC(1,1,5,10)
+  areaPapeleros: AreaPC(6,1,10,9)
+  area1f: AreaP(6,10,6,10)
+  area2f: AreaP(7,10,7,10)
+  area3p: AreaP(8,10,8,10)
+  area4p: AreaP(9,10,9,10)
+robots
+  robot florero
+  variables
+    cantFlores : numero
+    PosAvIni,PosCaIni : numero
+    av,ca : numero
+    almenos1 : boolean
+  comenzar
+    repetir 5
+      almenos1 := F
+      cantFlores:= 0
+      PosAvIni := PosAv
+      PosCaIni := PosCa
+      Random(av, 1, 5)
+      Random(ca, 1, 10)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      juntarFlores(cantFlores)
+      si(cantFlores <> 0)
+        BloquearEsquina(10,10)
+        Pos(10,10)
+        depositarFlores
+        almenos1 := V
+      LiberarEsquina(av,ca)
+      Pos(PosAvIni,PosCaIni)
+      si(almenos1)
+        LiberarEsquina(10,10) 
+  fin
+  robot papelero
+  variables
+    cantPapeles : numero
+    PosAvIni,PosCaIni : numero
+    av,ca : numero
+    almenos1 : boolean
+  comenzar
+    repetir 3
+      cantPapeles := 0
+      almenos1 := F
+      PosAvIni := PosAv
+      PosCaIni := PosCa
+      Random(av, 6, 10)
+      Random(ca, 1, 9)
+      BloquearEsquina(av,ca)
+      Pos(av,ca)
+      juntarPapeles(cantPapeles)
+      si(cantPapeles <> 0)
+        Informar(cantPapeles)
+        BloquearEsquina(10,10)
+        Pos(10,10)
+        depositarPapeles
+        almenos1 := V
+      LiberarEsquina(av,ca)
+      Pos(PosAvIni,PosCaIni)
+      si(almenos1)
+        LiberarEsquina(10,10) 
+  fin
+variables
+  robot1 ,robot2: florero
+  robot3 ,robot4: papelero
+comenzar
+  AsignarArea(robot1, areaFloreros)
+  AsignarArea(robot1, deposito)
+  AsignarArea(robot1, area1f)
+  AsignarArea(robot2, areaFloreros)
+  AsignarArea(robot2, deposito)
+  AsignarArea(robot2, area2f)
+  AsignarArea(robot3, areaPapeleros)
+  AsignarArea(robot3, deposito)
+  AsignarArea(robot3, area3p)
+  AsignarArea(robot4, areaPapeleros)
+  AsignarArea(robot4, deposito)
+  AsignarArea(robot4, area4p)
+  Iniciar(robot1, 6,10)
+  Iniciar(robot2, 7,10)
+  Iniciar(robot3, 8,10)
+  Iniciar(robot4, 9,10)
+fin
