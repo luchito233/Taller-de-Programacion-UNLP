@@ -1,0 +1,72 @@
+programa Punto1
+procesos
+  proceso recojerPapeles(ES totalPapeles: numero)
+  variables
+    papalesActuales : numero
+  comenzar
+    papalesActuales := 0
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      totalPapeles := totalPapeles + 1
+      papalesActuales := papalesActuales + 1
+    repetir papalesActuales
+      depositarPapel
+  fin
+  proceso recojerFlores(ES totalFlores : numero)
+  variables
+    floresActuales : numero
+  comenzar
+    floresActuales := 0
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      totalFlores := totalFlores + 1
+      floresActuales := floresActuales + 1
+    repetir floresActuales
+      depositarFlor
+  fin 
+  proceso escalera(ES cantPapeles : numero; ES cantFlores : numero; E medida : numero) 
+  comenzar
+    repetir 2
+      repetir medida
+        recojerFlores(cantFlores)
+        recojerPapeles(cantPapeles)
+        mover
+      derecha
+    recojerFlores(cantFlores)
+    recojerPapeles(cantPapeles)
+    repetir 2
+      derecha
+  fin
+areas 
+  ciudad: AreaC(1,1,100,100)
+robots
+  robot tipo1
+  variables
+    superaPor1 : numero
+    cantFlores : numero
+    cantPapeles : numero
+    medida : numero
+  comenzar
+    superaPor1 := 0
+    medida := 0
+    repetir 4
+      cantFlores := 0
+      cantPapeles := 0
+      medida := medida + 1
+      escalera(cantPapeles,cantFlores,medida)
+      si(cantPapeles - cantFlores = 1)
+        superaPor1 := superaPor1 + 1
+    Informar('cantidad', superaPor1)
+  fin
+variables
+  robot1 : tipo1
+  robot2 : tipo1
+  robot3 : tipo1
+comenzar
+  AsignarArea(robot1,ciudad)
+  AsignarArea(robot2,ciudad)
+  AsignarArea(robot3,ciudad)
+  Iniciar(robot1, 12, 14)
+  Iniciar(robot2, 17, 10)
+  Iniciar(robot3, 22, 6)
+fin

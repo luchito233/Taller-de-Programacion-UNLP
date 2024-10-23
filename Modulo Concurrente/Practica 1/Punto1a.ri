@@ -1,0 +1,58 @@
+programa Punto1 
+procesos  
+  proceso depositarFlores(E flores:numero) 
+  comenzar
+    repetir flores
+      depositarFlor
+  fin
+  proceso juntar(ES flor:numero) 
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flor := flor + 1
+  fin
+  proceso recorrerAv(ES cantSinFlores:numero ; ES sumaTotal: numero)
+  comenzar
+    cantSinFlores:= 0
+    sumaTotal:= 0
+    repetir 99
+      si (HayFlorEnLaEsquina)
+        juntar(sumaTotal)
+      sino
+        cantSinFlores := cantSinFlores + 1
+      mover
+    si (HayFlorEnLaEsquina)
+      juntar(sumaTotal)
+    sino
+      cantSinFlores := cantSinFlores + 1
+  fin
+  proceso recorrerAvenidas
+  variables
+    cantEsqSinFlores : numero
+    sumaTotal : numero
+  comenzar
+    recorrerAv(cantEsqSinFlores,sumaTotal)
+    depositarFlores(sumaTotal)
+    Informar(cantEsqSinFlores)
+    Informar(sumaTotal)
+  fin 
+areas
+  ciudad: AreaC(1,1,100,100)
+robots
+  robot tipo1
+  variables 
+    av : numero
+  comenzar
+    av := 1
+    repetir 2
+      recorrerAvenidas
+      av:= av + 2
+      Pos(av,1)
+    recorrerAvenidas
+  fin
+variables
+  robot1 : tipo1
+comenzar
+  AsignarArea(robot1,ciudad)
+  Iniciar(robot1, 1, 1)
+fin

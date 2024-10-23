@@ -1,0 +1,75 @@
+programa Punto1
+procesos
+  proceso recolectarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin 
+  proceso recolectarPapales
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+  fin
+  proceso recorrerAreaPar
+  variables
+    avenida : numero
+  comenzar
+    avenida := PosAv
+    repetir 24
+      repetir 99
+        recolectarPapales
+        mover
+      recolectarPapales
+      avenida := avenida + 1
+      Pos(avenida,1)
+    repetir 99 
+      recolectarPapales
+      mover
+    recolectarPapales   
+  fin
+  proceso recorrerAreaImpar
+  variables
+    avenida : numero
+  comenzar
+    avenida := PosAv
+    repetir 24
+      repetir 99
+        recolectarFlores
+        mover
+      recolectarFlores
+      avenida:= avenida + 1
+      Pos(avenida,1)
+    repetir 99
+      recolectarFlores
+      mover
+    recolectarFlores
+  fin
+areas 
+  area1: AreaP(1,1,25,100)
+  area2: AreaP(26,1,50,100)
+  area3: AreaP(51,1,75,100)
+  area4: AreaP(76,1,100,100)
+robots
+  robot tipo1par
+  comenzar
+    recorrerAreaPar
+    Pos(76,1)
+    recorrerAreaPar
+  fin
+  robot tipo2impar
+  comenzar
+    recorrerAreaImpar
+    Pos(51,1)
+    recorrerAreaImpar
+  fin
+variables
+  robot1 : tipo1par
+  robot2 : tipo2impar 
+comenzar
+  AsignarArea(robot1,area2)
+  AsignarArea(robot2,area1)
+  AsignarArea(robot1,area4)
+  AsignarArea(robot2,area3)
+  Iniciar(robot1, 26, 1)
+  Iniciar(robot2, 1, 1)
+fin
