@@ -70,7 +70,6 @@ robots
           depositarPapel 
       Pos(avInicial,1)
       LiberarEsquina(50,50)
-      {si coincide con la cantidad a juntar entonces los toma}    
       si(cantidadEnLaEsquina = cantAjuntar)
         contador:= 0
         repetir cantidadEnLaEsquina
