@@ -1,0 +1,97 @@
+programa Punto2
+procesos
+  proceso depositarPapeles(ES cantPapeles : numero)
+  variables
+    avInicial,caInicial : numero
+  comenzar
+    avInicial:= PosAv
+    caInicial:= PosCa
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    repetir 5
+      depositarPapel
+      cantPapeles := cantPapeles - 1
+    Pos(avInicial,caInicial)
+    LiberarEsquina(50,50)
+  fin
+  proceso juntarPapeles(ES cantPapeles : numero)
+  variables
+    avActual,caActual : numero
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+      si(cantPapeles = 5)
+        depositarPapeles(cantPapeles)
+    si(HayPapelEnLaEsquina)    
+      tomarPapel
+      cantPapeles := cantPapeles + 1
+    si(cantPapeles = 5)
+      depositarPapeles(cantPapeles)  
+  fin
+areas
+  deposito: AreaC (50,50,50,50)
+  area1: AreaP(5,1,5,100)
+  area2: AreaP(10,1,10,100)
+  area3: AreaP(11,1,11,1)
+  area4: AreaP(12,1,12,1)
+robots
+  robot productor
+  variables
+    cantPapeles : numero
+  comenzar
+    repetir 99
+      juntarPapeles(cantPapeles)
+      mover
+    juntarPapeles(cantPapeles)
+  fin
+  robot consumidor
+  variables
+    contador : numero
+    cantAjuntar : numero
+    cantidadEnLaEsquina : numero
+    avInicial : numero
+  comenzar
+    contador:= 0
+    mientras(contador <> 8)
+      cantidadEnLaEsquina := 0
+      Random(cantAjuntar, 2, 5)
+      avInicial:= PosAv
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      {tomo la cantidad q haya en la esquina}
+      cantidadEnLaEsquina:= 0
+      repetir cantAjuntar
+        si(HayPapelEnLaEsquina)
+          tomarPapel
+          cantidadEnLaEsquina:=cantidadEnLaEsquina+1
+      si(cantidadEnLaEsquina <> cantAjuntar)
+        repetir cantidadEnLaEsquina
+          depositarPapel 
+      Pos(avInicial,1)
+      LiberarEsquina(50,50)
+      {si coincide con la cantidad a juntar entonces los toma}    
+      si(cantidadEnLaEsquina = cantAjuntar)
+        contador:= 0
+        repetir cantidadEnLaEsquina
+          depositarPapel
+      sino
+        contador:= contador + 1           
+  fin
+variables
+  rProductor1,rProductor2: productor
+  rConsumidor1,rConsumidor2: consumidor
+comenzar
+  AsignarArea(rProductor1,area1)
+  AsignarArea(rProductor2,area2)
+  AsignarArea(rConsumidor1,area3)
+  AsignarArea(rConsumidor2,area4)
+  AsignarArea(rProductor1,deposito)
+  AsignarArea(rProductor2,deposito)
+  AsignarArea(rConsumidor1,deposito)
+  AsignarArea(rConsumidor2,deposito)
+  Iniciar(rProductor1, 5,1)
+  Iniciar(rProductor2, 10,1)
+  Iniciar(rConsumidor1, 11,1)
+  Iniciar(rConsumidor2, 12,1)
+fin 
