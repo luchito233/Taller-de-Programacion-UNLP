@@ -1,0 +1,159 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso esperarAlosDemas(E quienSoy : numero)
+  variables
+    termino : boolean
+  comenzar
+    si(quienSoy = 1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+      EnviarMensaje(V,r4)
+      RecibirMensaje(termino,*)
+      RecibirMensaje(termino,*)
+      RecibirMensaje(termino,*)
+    sino
+      si(quienSoy = 2)
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r3)
+        EnviarMensaje(V,r4)
+        RecibirMensaje(termino,*)
+        RecibirMensaje(termino,*)
+        RecibirMensaje(termino,*)
+      sino
+        si(quienSoy = 3)
+          EnviarMensaje(V,r2)
+          EnviarMensaje(V,r1)
+          EnviarMensaje(V,r4)
+          RecibirMensaje(termino,*)
+          RecibirMensaje(termino,*)
+          RecibirMensaje(termino,*)
+        sino
+          EnviarMensaje(V,r2)
+          EnviarMensaje(V,r3)
+          EnviarMensaje(V,r1)
+          RecibirMensaje(termino,*)
+          RecibirMensaje(termino,*)
+          RecibirMensaje(termino,*) 
+  fin
+  proceso vaciarBolsa
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+  proceso depositarObjeto(E obj: numero; E tipo: boolean)
+  variables
+    avIni,caIni : numero
+  comenzar
+    avIni := PosAv
+    caIni := PosCa
+    repetir obj
+      BloquearEsquina(1,6)
+      Pos(1,6)
+      si(tipo)
+        depositarFlor
+      sino
+        depositarPapel
+      Pos(avIni,caIni)
+      LiberarEsquina(1,6)
+  fin
+  proceso enviarMnjs(E g1 : numero; E g2: numero)
+  comenzar
+    EnviarMensaje(g1,r1)
+    EnviarMensaje(g1,r2)
+    EnviarMensaje(g1,r3)
+    EnviarMensaje(g1,r4)
+    EnviarMensaje(g2,r1)
+    EnviarMensaje(g2,r2)
+    EnviarMensaje(g2,r3)
+    EnviarMensaje(g2,r4)
+  fin
+areas
+  area1: AreaP (1,1,20,1)
+  area2: AreaP (1,2,20,2)
+  area3: AreaP (1,3,20,3)
+  area4: AreaP (1,4,20,4)
+  areaJefe: AreaP (1,5,1,5)
+  deposito: AreaPC (1,6,1,6)
+robots
+  robot corredor
+  variables
+    quienSoy: numero
+    objetos : numero
+    ganador1,ganador2 : numero
+    avIni,caIni : numero
+  comenzar
+    objetos := 0 
+    avIni := PosAv
+    caIni := PosCa
+    derecha
+    RecibirMensaje(quienSoy,rJefe) 
+    vaciarBolsa
+    esperarAlosDemas(quienSoy)
+    mover
+    repetir 18
+      si(HayFlorEnLaEsquina)
+        tomarFlor
+        objetos := objetos + 1
+      mover 
+    depositarObjeto(objetos,V)
+    EnviarMensaje(quienSoy,rJefe)
+    RecibirMensaje(ganador1,rJefe)
+    RecibirMensaje(ganador2,rJefe)
+    si((ganador1 = quienSoy) | (ganador2 = quienSoy))
+      objetos := 0 
+      repetir 2
+        derecha
+      repetir 18
+        si(HayPapelEnLaEsquina)
+          tomarPapel
+          objetos := objetos + 1
+        mover 
+      depositarObjeto(objetos,F)
+      EnviarMensaje(quienSoy,rJefe)
+    esperarAlosDemas(quienSoy)
+    Pos(avIni,caIni)  
+  fin
+  robot jefe
+  variables
+    ganador1,ganador2 : numero
+    ganadorFinal, quienEs : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    RecibirMensaje(ganador1,*)
+    RecibirMensaje(ganador2,*)
+    repetir 2
+      RecibirMensaje(quienEs,*)
+    enviarMnjs(ganador1,ganador2)
+    RecibirMensaje(ganadorFinal,*)
+    RecibirMensaje(quienEs,*)
+    Informar('el ganador de la carrera es',ganadorFinal)
+  fin
+variables
+  r1,r2,r3,r4: corredor
+  rJefe: jefe
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, area3)
+  AsignarArea(r4, area4)
+  AsignarArea(rJefe, areaJefe)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, deposito)
+  AsignarArea(r3, deposito)
+  AsignarArea(r4, deposito)  
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 1,2)
+  Iniciar(r3, 1,3)
+  Iniciar(r4, 1,4)
+  Iniciar(rJefe, 1,5)
+fin

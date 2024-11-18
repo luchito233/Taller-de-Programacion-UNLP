@@ -1,0 +1,122 @@
+programa ejemplo
+procesos
+  proceso enviarMedidas
+  variables
+    ancho,alto : numero
+  comenzar
+    Random(alto, 1, 19)
+    Random(ancho, 1, 19)
+    Informar('alto r1',alto)
+    Informar('ancho r1',ancho)
+    EnviarMensaje(alto,r1)
+    EnviarMensaje(ancho,r1)
+    Random(alto, 1, 19)
+    Random(ancho, 1, 19)
+    Informar('alto r2',alto)
+    Informar('ancho r2',ancho)
+    EnviarMensaje(alto,r2)
+    EnviarMensaje(ancho,r2)
+  fin
+  proceso juntarFlores(E flores : numero; E av : numero; E ca : numero)
+  comenzar
+    repetir flores
+      BloquearEsquina(21,21)
+      Pos(21,21)
+      tomarFlor
+      Pos(av,ca)
+      LiberarEsquina(21,21)
+      depositarFlor
+  fin
+  proceso juntarPapeles(E papeles : numero; E av : numero; E ca : numero)
+  comenzar
+    repetir papeles
+      BloquearEsquina(22,22)
+      Pos(22,22)
+      tomarPapel
+      Pos(av,ca)
+      LiberarEsquina(22,22)
+      depositarPapel
+  fin
+  proceso rectangulo(E alto : numero; E ancho : numero; E quienSoy : numero)
+  variables
+    flores,papeles : numero
+    sumaTotal : numero
+    avIni,caIni : numero
+  comenzar
+    sumaTotal := 0
+    repetir 2
+      repetir alto
+        avIni := PosAv
+        caIni := PosCa
+        Random(flores,1,3)
+        sumaTotal:= sumaTotal + flores
+        juntarFlores(flores,avIni,caIni)
+        Random(papeles,1,3)
+        sumaTotal := sumaTotal + papeles
+        juntarPapeles(papeles,avIni,caIni)
+        mover
+      derecha        
+      repetir ancho
+        avIni := PosAv
+        caIni := PosCa
+        Random(flores,1,3)
+        sumaTotal := sumaTotal + flores
+        juntarFlores(flores,avIni,caIni)
+        Random(papeles,1,3)
+        sumaTotal := sumaTotal + papeles
+        juntarPapeles(papeles,avIni,caIni)
+        mover
+      derecha
+    EnviarMensaje(quienSoy,rJefe)
+    EnviarMensaje(sumaTotal,rJefe)  
+  fin
+areas
+  area1: AreaP (1,1,20,20)
+  area2: AreaP (21,1,40,20)
+  areaJefe: AreaP(23,23,23,23)
+  areaFlores: AreaPC(21,21,21,21)
+  areaPapeles: AreaPC(22,22,22,22)
+robots
+  robot recolector
+  variables
+    quienSoy : numero
+    alto, ancho : numero
+  comenzar
+    RecibirMensaje(quienSoy,rJefe)
+    RecibirMensaje(alto,rJefe)
+    RecibirMensaje(ancho,rJefe)
+    rectangulo(alto,ancho,quienSoy)
+  fin
+  robot jefe
+  variables
+    quienEs : numero
+    ganador,objetos : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    enviarMedidas
+    RecibirMensaje(ganador,*)
+    si(ganador = 1)
+      RecibirMensaje(objetos,r1)
+    sino
+      RecibirMensaje(objetos,r2)
+    Informar('el ganador es',ganador)
+    Informar('la cantidad de objetos depositados',objetos)
+    RecibirMensaje(quienEs,*)
+    RecibirMensaje(objetos,*)      
+  fin
+variables
+  r1,r2: recolector
+  rJefe: jefe
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r1, areaFlores)
+  AsignarArea(r2, areaFlores)
+  AsignarArea(r1, areaPapeles)
+  AsignarArea(r2, areaPapeles)
+  AsignarArea(rJefe, areaJefe)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 21,1)
+  Iniciar(rJefe, 23,23)
+fin

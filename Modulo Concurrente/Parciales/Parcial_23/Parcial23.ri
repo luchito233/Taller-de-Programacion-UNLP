@@ -1,0 +1,93 @@
+programa parcial26
+procesos
+  proceso verificacion
+  variables
+    ok1,ok2,ok3, aux : boolean
+    quienEs : numero
+  comenzar
+    aux:=V
+    mientras(aux)
+      RecibirMensaje(ok1,*)
+      RecibirMensaje(ok2,*)
+      RecibirMensaje(ok3,*)
+      si(ok1=F)&(ok2=F)&(ok3=F)
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r2)
+        EnviarMensaje(V,r3)
+      sino
+        EnviarMensaje(F,r1)
+        EnviarMensaje(F,r2)
+        EnviarMensaje(F,r3)
+        aux:=F  
+  fin
+areas
+  area1: AreaP (1,1,1,1)
+  area2: AreaP (2,2,2,2)
+  area3: AreaP (3,3,3,3)
+  area4: AreaP (4,4,4,4)
+  cuadrante: AreaC(10,10,13,13)
+robots
+  robot buscador 
+  variables 
+    quienSoy : numero
+    Av,Ca,a,c,f : numero
+    ok,g:boolean
+  comenzar
+    g:=F
+    f:=0
+    a:=PosAv
+    c:=PosCa 
+    RecibirMensaje(quienSoy,r4)
+    ok:=V
+    mientras(ok)
+      Random(Av,10,13)
+      Random(Ca,10,13)
+      BloquearEsquina(Av,Ca)
+      Pos(Av,Ca)
+      si(HayFlorEnLaEsquina)
+        tomarFlor
+        g:=V
+      Pos(a,c)
+      LiberarEsquina(Av,Ca)
+      EnviarMensaje(g,r4)
+      RecibirMensaje(ok,r4)
+    si(g)
+      EnviarMensaje(quienSoy,r4)
+  fin
+  robot escondedor
+  variables
+    avIni,caIni : numero
+    av,ca : numero
+    id:numero
+  comenzar
+    avIni:= PosAv
+    caIni:= PosCa
+    Random(av,10,13)
+    Random(ca,10,13)
+    Pos(av,ca)
+    depositarFlor
+    Pos(avIni,caIni)
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    verificacion
+    RecibirMensaje(id,*)
+    Informar("el ganador fue el bot", id)
+  fin
+variables
+  r1,r2,r3: buscador
+  r4 : escondedor
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, area3)
+  AsignarArea(r4, area4)
+  AsignarArea(r1, cuadrante)
+  AsignarArea(r2, cuadrante)
+  AsignarArea(r3, cuadrante)
+  AsignarArea(r4, cuadrante)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,2)
+  Iniciar(r3, 3,3)
+  Iniciar(r4, 4,4)
+fin
