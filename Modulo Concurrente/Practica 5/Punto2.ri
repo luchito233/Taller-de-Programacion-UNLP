@@ -1,0 +1,127 @@
+programa Punto2
+procesos
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso juntarPapeles(ES papeles: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:=papeles+1
+  fin
+  proceso juntarAmbos(ES sumaTotal: numero)
+  comenzar
+    juntarFlores(sumaTotal)
+    juntarPapeles(sumaTotal)
+  fin
+  proceso depositar(ES sumaTotal: numero)
+  comenzar
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+    sumaTotal := 0
+  fin  
+  proceso comunicacion(E quienSoy : numero)
+  variables
+    termino : numero
+  comenzar
+    si(quienSoy = 1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+      RecibirMensaje(termino,*)
+      RecibirMensaje(termino,*)
+    sino
+      si(quienSoy = 2)
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r3)
+        RecibirMensaje(termino,*)
+        RecibirMensaje(termino,*)
+      sino
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r2)
+        RecibirMensaje(termino,*)
+        RecibirMensaje(termino,*)
+  fin
+  proceso asignarIDs
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+areas
+  deposito: AreaC (50,50,50,50)
+  area1: AreaP(1,1,100,1)
+  area2: AreaP(1,2,100,2)
+  area3: AreaP(1,3,100,3)
+  areaJefe: AreaP(1,4,1,4)
+robots
+  robot recolector
+  variables
+    quienSoy,sumaTotal : numero
+    termino: boolean
+    avIni,caIni : numero
+  comenzar
+    sumaTotal:= 0
+    RecibirMensaje(quienSoy,rJefe)
+    derecha
+    repetir 9
+      juntarAmbos(sumaTotal)
+      mover
+    juntarAmbos(sumaTotal)
+    avIni := PosAv
+    caIni := PosCa
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    depositar(sumaTotal)
+    Pos(avIni,caIni)
+    LiberarEsquina(50,50)
+    comunicacion(quienSoy)
+    repetir 9
+      repetir 10
+        juntarAmbos(sumaTotal)
+        mover
+      juntarAmbos(sumaTotal)
+      avIni := PosAv
+      caIni := PosCa
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      depositar(sumaTotal)
+      Pos(avIni,caIni)
+      LiberarEsquina(50,50)
+      comunicacion(quienSoy)
+    EnviarMensaje(V,rJefe)
+  fin
+  robot jefe
+  variables
+    termino : boolean
+    cantFlores : numero
+  comenzar
+    asignarIDs
+    cantFlores := 0
+    repetir 3
+      RecibirMensaje(termino,*)
+    Pos(50,50)
+    juntarFlores(cantFlores)
+    Informar('cantidad de flores depositadas es',cantFlores)
+  fin
+variables
+  r1,r2,r3: recolector
+  rJefe: jefe
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, area3)
+  AsignarArea(rJefe, areaJefe)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, deposito)
+  AsignarArea(r3, deposito)
+  AsignarArea(rJefe, deposito)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 1,2)
+  Iniciar(r3, 1,3)
+  Iniciar(rJefe, 1,4)
+fin

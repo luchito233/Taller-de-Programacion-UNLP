@@ -1,0 +1,118 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa Punto1
+procesos
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+  fin
+  proceso juntarPapeles(ES papeles: numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      papeles:=papeles+1
+  fin
+  proceso asignarIDs
+  comenzar
+    EnviarMensaje(1,R1)
+    EnviarMensaje(2,R2)
+    EnviarMensaje(3,A1)
+    EnviarMensaje(4,A2)
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot equipoRojo
+  variables
+    quienSoy,cantFlores : numero
+  comenzar
+    cantFlores:= 0
+    RecibirMensaje(quienSoy,rFiscal)
+    repetir 96
+      juntarFlores(cantFlores)
+      mover
+    repetir 2
+      juntarFlores(cantFlores)
+      BloquearEsquina(PosAv,PosCa+1)
+      mover
+    LiberarEsquina(PosAv,PosCa-1)
+    juntarFlores(cantFlores)
+    mover
+    LiberarEsquina(PosAv,PosCa-1)
+    juntarFlores(cantFlores)
+    EnviarMensaje(quienSoy,rFiscal)
+    EnviarMensaje(cantFlores,rFiscal)
+  fin
+  robot equipoAzul
+  variables
+    quienSoy,cantPapeles : numero
+  comenzar
+    derecha
+    cantPapeles:= 0
+    RecibirMensaje(quienSoy,rFiscal)
+    repetir 2
+      juntarPapeles(cantPapeles)
+      BloquearEsquina(PosAv+1,PosCa)
+      mover
+    LiberarEsquina(PosAv-1,PosCa)
+    juntarPapeles(cantPapeles)
+    mover
+    LiberarEsquina(PosAv-1,PosCa)
+    repetir 96
+      juntarPapeles(cantPapeles)
+      mover
+    juntarPapeles(cantPapeles)
+    EnviarMensaje(quienSoy,rFiscal)
+    EnviarMensaje(cantPapeles,rFiscal)
+  fin
+  robot fiscalizador
+  variables
+    quienEs : numero
+    sumaFlores,sumaPapeles : numero
+    flores,papeles : numero
+  comenzar
+    asignarIDs
+    sumaFlores:= 0
+    sumaPapeles:= 0
+    repetir 4
+      RecibirMensaje(quienEs,*)
+      si(quienEs = 1)
+        RecibirMensaje(flores,R1)
+        sumaFlores:= sumaFlores + flores
+      sino
+        si(quienEs = 2)
+          RecibirMensaje(flores,R2)
+          sumaFlores:= sumaFlores + flores
+        sino
+          si(quienEs = 3)
+            RecibirMensaje(papeles,A1)
+            sumaPapeles:= sumaPapeles + papeles
+          sino
+            RecibirMensaje(papeles,A2)
+            sumaPapeles:= sumaPapeles + papeles
+    si(sumaFlores > sumaPapeles)
+      Informar('hubo mas flores que papeles',sumaFlores)
+    sino
+      Informar('hubo mas papales que flores',sumaPapeles)
+  fin
+variables
+  R1,R2:equipoRojo
+  A1,A2:equipoAzul
+  rFiscal : fiscalizador
+comenzar
+  AsignarArea(R1, ciudad)
+  AsignarArea(R2, ciudad)
+  AsignarArea(A1, ciudad)
+  AsignarArea(A2, ciudad)
+  AsignarArea(rFiscal, ciudad)
+  Iniciar(R1, 2,1)
+  Iniciar(R2, 3,1)
+  Iniciar(A1, 1,98)
+  Iniciar(A2, 1,99)
+  Iniciar(rFiscal, 100,1)
+fin

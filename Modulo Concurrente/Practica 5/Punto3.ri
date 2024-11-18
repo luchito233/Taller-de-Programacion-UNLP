@@ -1,0 +1,109 @@
+programa punto3
+procesos
+  proceso juntarFlores(ES flores: numero; E av : numero; E ca : numero; E quienSoy : numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores + 1
+      si(flores = 10)
+        BloquearEsquina(10,10)
+        Pos(10,10)
+        depositarFlores
+        Pos(av,ca)
+        LiberarEsquina(10,10)
+        EnviarMensaje(quienSoy,rCosechador)
+        EnviarMensaje(V,rCosechador)
+        flores:= 0
+  fin
+  proceso depositarFlores
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+areas
+  area1: AreaP(1,3,100,3)
+  area2: AreaP(1,4,100,4)
+  areaCosechador: AreaP(1,5,1,5)
+  deposito: AreaC(10,10,10,10)
+robots
+  robot recolector
+  variables
+    cantFlores : numero
+    avIni,caIni: numero
+    cantEsqRecorridas : numero
+    quienSoy : numero 
+  comenzar
+    RecibirMensaje(quienSoy,rCosechador)
+    cantFlores:= 0
+    cantEsqRecorridas:= 1
+    derecha
+    avIni:= PosAv
+    caIni:= PosCa
+    mientras(PosAv < 100)
+      juntarFlores(cantFlores,avIni,caIni,quienSoy)
+      mover
+      avIni:= PosAv
+      caIni:= PosCa
+      cantEsqRecorridas:= cantEsqRecorridas + 1
+      si(cantEsqRecorridas = 5)
+        BloquearEsquina(10,10)
+        Pos(10,10)
+        depositarFlores
+        Pos(avIni,caIni)
+        LiberarEsquina(10,10)
+        EnviarMensaje(quienSoy,rCosechador)
+        EnviarMensaje(V,rCosechador)
+        cantEsqRecorridas:= 0
+    juntarFlores(cantFlores,avIni,caIni,quienSoy)
+    cantEsqRecorridas:= cantEsqRecorridas + 1
+    si(cantEsqRecorridas = 5)
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      depositarFlores
+      Pos(avIni,caIni)
+      LiberarEsquina(10,10)
+      EnviarMensaje(quienSoy,rCosechador)
+      EnviarMensaje(V,rCosechador)
+      cantEsqRecorridas:= 0
+    EnviarMensaje(quienSoy,rCosechador)
+    EnviarMensaje(F,rCosechador)
+  fin
+  robot cosechador
+  variables
+    robot1,robot2: boolean
+    cantFlores : numero
+    quienEs : numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    robot1:= V
+    robot2:= V
+    mientras(robot1 | robot2)
+      RecibirMensaje(quienEs,*)
+      si(quienEs = 1)
+        RecibirMensaje(robot1,r1)
+      sino
+        RecibirMensaje(robot2,r2)
+      BloquearEsquina(10,10)
+      Pos(10,10)
+      mientras(HayFlorEnLaEsquina)
+        tomarFlor
+        cantFlores:= cantFlores + 1
+      Pos(1,5)
+      LiberarEsquina(10,10)
+    Informar('cantidad de flores recolectadas',cantFlores)  
+  fin
+variables
+  r1,r2: recolector
+  rCosechador : cosechador
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(rCosechador, areaCosechador)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, deposito)
+  AsignarArea(rCosechador, deposito)
+  Iniciar(r1, 1,3)
+  Iniciar(r2, 1,4)
+  Iniciar(rCosechador, 1,5)
+fin
