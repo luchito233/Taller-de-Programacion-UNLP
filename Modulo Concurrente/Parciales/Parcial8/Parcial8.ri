@@ -1,0 +1,104 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un cÃƒÂ³digo de ejemplo que implementa un
+proceso que recibe un nÃƒÂºmero de avenida como parÃƒÂ¡metro,
+se posiciona en esa avenida y la recorre.}
+
+programa Parcial8
+procesos 
+  proceso depositarOjuntar (E flores : numero; E aux : boolean)
+  variables
+    avIni,caIni : numero
+  comenzar
+    avIni := PosAv
+    caIni := PosCa
+    BloquearEsquina(10,10)
+    Pos(10,10)
+    si(aux)
+      mientras(HayFlorEnLaBolsa)
+        depositarFlor
+    sino
+      mientras(HayFlorEnLaEsquina)
+        tomarFlor    
+    Pos(avIni,caIni)
+    LiberarEsquina(10,10)
+  fin 
+  proceso juntarFlores(ES flores: numero)
+  variables
+    avIni,caIni : numero
+  comenzar
+    si(HayFlorEnLaEsquina)
+      tomarFlor
+      flores := flores + 1
+      si(flores = 10)
+        depositarOjuntar(flores,V)
+        flores := 0 
+        EnviarMensaje(V,rCosechador)
+  fin
+areas
+  deposito : AreaC (10,10,10,10)
+  area1 : AreaP(1,3,100,3)
+  area2 : AreaP(1,4,100,4)
+  areaCosechador: AreaP(1,5,1,5)
+robots
+  robot recolector
+  variables
+    cantFlores : numero
+    esquinasRecorridas : numero
+    avIni,caIni : numero
+    continuar : boolean
+  comenzar
+    cantFlores := 0
+    esquinasRecorridas := 0
+    derecha
+    repetir 99
+      juntarFlores(cantFlores)
+      mover
+      esquinasRecorridas := esquinasRecorridas + 1
+      si(esquinasRecorridas = 5)
+        depositarOjuntar(cantFlores,V)
+        esquinasRecorridas := 0
+        EnviarMensaje(V,rCosechador)
+    juntarFlores(cantFlores)
+    esquinasRecorridas := esquinasRecorridas + 1
+    si(esquinasRecorridas = 5)
+      avIni := PosAv
+      caIni := PosCa
+      depositarOjuntar(cantFlores,V)
+      esquinasRecorridas := 0       
+      EnviarMensaje(V,rCosechador) 
+    EnviarMensaje(F,rCosechador)
+  fin
+  robot cosechador
+  variables
+    bot1,bot2 : boolean
+    trabajar : boolean
+    cantFlores : numero
+  comenzar
+    cantFlores := 0
+    bot1 := V
+    bot2:= V
+    mientras((bot1) | (bot2))
+      RecibirMensaje(trabajar,*)
+      si(trabajar) 
+        depositarOjuntar(cantFlores,F)
+      sino
+        si(bot1)
+          bot1 := F
+        sino
+          bot2 := F
+    Informar('flores recolectadas',cantFlores)  
+  fin
+variables
+  r1,r2 : recolector
+  rCosechador : cosechador
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(rCosechador, areaCosechador)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, deposito)
+  AsignarArea(rCosechador, deposito)
+  Iniciar(r1, 1,3)
+  Iniciar(r2, 1,4)
+  Iniciar(rCosechador, 1,5)
+fin

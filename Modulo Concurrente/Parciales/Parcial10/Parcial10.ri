@@ -1,0 +1,139 @@
+programa parcia10
+procesos
+  proceso enfocar
+  comenzar
+    si(PosAv = 9)
+      derecha
+    sino
+      izquierda
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso juntarFlores(ES cant: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      cant := cant + 1
+  fin 
+  proceso depositarFlores(ES flores : numero)
+  variables
+    caIni : numero
+  comenzar
+    caIni := PosCa
+    BloquearEsquina(PosAv,20)
+    Pos(PosAv,20)
+    repetir flores
+      si(HayFlorEnLaBolsa) {lo pongo por el caso q las flores sean = 0}
+        depositarFlor
+    Pos(PosAv,caIni)
+    LiberarEsquina(PosAv,20)
+  fin 
+areas
+  areaLateralAzul1: AreaP(9,21,19,21)
+  areaLateralAzul2: AreaP(9,19,19,19)
+  areaLateralVerde1: AreaP(21,21,31,21)
+  areaLateralVerde2: AreaP(21,19,31,19)
+  areaCentralAzul: AreaPC(9,20,19,20)
+  areaCentralVerde: AreaPC(21,20,31,20)  
+  deposito: AreaPC(20,20,20,20)
+  areaJefe: AreaP(20,18,20,18)
+robots
+  robot lateral
+  variables
+    cantFlores,flores: numero
+  comenzar
+    enfocar
+    mover
+    repetir 9
+      cantFlores := 0
+      juntarFlores(cantFlores)
+      depositarFlores(cantFlores)
+      mover
+    juntarFlores(cantFlores)
+    depositarFlores(cantFlores)
+    cantFlores := 0
+    si(PosAv = 19)
+      EnviarMensaje(V,rAzul3)
+    sino
+      EnviarMensaje(V,rVerde3)
+  fin
+  robot central
+  variables
+    quienSoy : numero
+    cantFlores, flores : numero
+    termino : boolean
+    caIni,avIni : numero
+  comenzar
+    RecibirMensaje(quienSoy,rJefe)
+    RecibirMensaje(termino,*)
+    RecibirMensaje(termino,*)
+    enfocar
+    mover
+    repetir 9
+      juntarFlores(cantFlores)
+      mover
+    juntarFlores(cantFlores)
+    avIni := PosAv
+    caIni := PosCa
+    BloquearEsquina(20,20)
+    Pos(20,20)
+    repetir cantFlores
+      depositarFlor
+    Pos(avIni,caIni)
+    LiberarEsquina(20,20)
+    EnviarMensaje(quienSoy,rJefe)
+    EnviarMensaje(cantFlores,rJefe)        
+  fin
+  robot jefe
+  variables
+    quienEs, ganador : numero
+    FloresEquipoAzul,FloresEquipoVerde : numero
+    rMax : numero
+  comenzar
+    rMax := 0
+    EnviarMensaje(1,rAzul3)
+    EnviarMensaje(2,rVerde3)
+    RecibirMensaje(ganador,*)
+    Informar('el ganador es',ganador)
+    si(ganador = 1)
+      RecibirMensaje(FloresEquipoAzul,rAzul3)
+      RecibirMensaje(quienEs,rVerde3)
+      RecibirMensaje(FloresEquipoVerde,rVerde3)
+    sino
+      RecibirMensaje(FloresEquipoVerde,rVerde3)
+      RecibirMensaje(quienEs,rAzul3)
+      RecibirMensaje(FloresEquipoAzul,rAzul3)
+    si(FloresEquipoAzul > FloresEquipoVerde)
+      Informar('el equipo azul junto mas flores',FloresEquipoAzul)
+    sino
+      Informar('el equipo verde junto mas flores',FloresEquipoVerde)
+  fin
+variables
+  rAzul1,rAzul2,rVerde1,rVerde2 : lateral
+  rAzul3,rVerde3 : central
+  rJefe : jefe
+comenzar
+  AsignarArea(rAzul1,areaLateralAzul1)
+  AsignarArea(rAzul2,areaLateralAzul2)
+  AsignarArea(rAzul1,areaCentralAzul)
+  AsignarArea(rAzul2,areaCentralAzul)
+  AsignarArea(rVerde1,areaLateralVerde1)
+  AsignarArea(rVerde2,areaLateralVerde2)
+  AsignarArea(rVerde1,areaCentralVerde)
+  AsignarArea(rVerde2,areaCentralVerde)
+  AsignarArea(rAzul3,areaCentralAzul)
+  AsignarArea(rVerde3,areaCentralVerde)
+  AsignarArea(rAzul3,deposito)
+  AsignarArea(rVerde3,deposito)
+  AsignarArea(rJefe,areaJefe)
+  Iniciar(rAzul1,9,21)
+  Iniciar(rAzul2,9,19)
+  Iniciar(rAzul3,9,20)
+  Iniciar(rVerde1,31,21)
+  Iniciar(rVerde2,31,19)
+  Iniciar(rVerde3,31,20)
+  Iniciar(rJefe,20,18)
+fin

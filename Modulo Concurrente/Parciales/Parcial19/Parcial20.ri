@@ -1,0 +1,87 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa Parcial20
+procesos
+  proceso juntarPapeles(ES papeles: numero)
+  variables
+    avIni,caIni : numero
+  comenzar
+    avIni := PosAv
+    caIni := PosCa
+    BloquearEsquina(5,5)
+    Pos(5,5)
+    mientras((HayPapelEnLaEsquina) & (papeles < 10))
+      tomarPapel
+      papeles := papeles + 1
+    Pos(avIni,caIni)  
+    LiberarEsquina(5,5)  
+  fin
+  proceso depositarPapeles(E papeles: numero)
+  variables
+    avIni,caIni : numero
+  comenzar
+    avIni := PosAv
+    caIni := PosCa
+    BloquearEsquina(6,6)
+    Pos(6,6)
+    repetir papeles
+      depositarPapel
+    Pos(avIni,caIni)  
+    LiberarEsquina(6,6)  
+  fin
+areas
+  area1: AreaC (5,5,5,5)
+  area2: AreaC (6,6,6,6)
+  areaR1: AreaP (1,1,1,1)
+  areaR2: AreaP (2,2,2,2)
+robots
+  robot recolector1
+  variables
+    seguir : boolean
+    papeles : numero
+  comenzar
+    seguir := V
+    mientras(seguir)
+      papeles := 0
+      juntarPapeles(papeles)
+      si(papeles = 10)
+        EnviarMensaje(V,r2)
+      sino
+        EnviarMensaje(F,r2)
+      depositarPapeles(papeles)
+      RecibirMensaje(seguir,r2)
+    EnviarMensaje(F,r2)     
+  fin
+  robot recolector2
+  variables
+    seguir : boolean
+    papeles : numero
+  comenzar 
+    RecibirMensaje(seguir,r1)
+    mientras(seguir)
+      papeles := 0
+      juntarPapeles(papeles)
+      si(papeles = 10)
+        EnviarMensaje(V,r1)
+      sino
+        EnviarMensaje(F,r1)
+      depositarPapeles(papeles)
+      RecibirMensaje(seguir,r1)
+    EnviarMensaje(F,r1)  
+  fin
+variables
+  r1: recolector1
+  r2: recolector2
+comenzar
+  AsignarArea(r1, areaR1)
+  AsignarArea(r2, areaR2)
+  AsignarArea(r1, area1)
+  AsignarArea(r1, area2)
+  AsignarArea(r2, area1)
+  AsignarArea(r2, area2)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,2)
+fin
